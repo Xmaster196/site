@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Импульс — Тренируйся на полную</title>
+<style>
+  :root{
+    --bg:#0d0d0f;
+    --bg-card:#17171a;
+    --bg-card-2:#1f1f24;
+    --orange:#ff7a00;
+    --orange-hover:#ff9333;
+    --text:#f2f2f2;
+    --muted:#9b9ba3;
+    --border:#2a2a30;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Roboto,Arial,sans-serif;line-height:1.5;}
+  a{color:inherit;text-decoration:none;}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px;}
+
+  .btn{
+    display:inline-block;background:var(--orange);color:#111;font-weight:600;
+    padding:12px 26px;border-radius:10px;border:none;cursor:pointer;
+    transition:.2s;font-size:15px;font-family:inherit;
+  }
+  .btn:hover{background:var(--orange-hover);}
+  .btn-outline{background:transparent;color:var(--orange);border:1px solid var(--orange);}
+  .btn-outline:hover{background:rgba(255,122,0,.1);}
+
+  .section-title{text-align:center;font-size:32px;margin-bottom:12px;}
+  .section-sub{text-align:center;color:var(--muted);max-width:640px;margin:0 auto 40px;font-size:15px;}
+  .tag{
+    display:inline-block;font-size:12px;color:var(--orange);
+    border:1px solid rgba(255,122,0,.4);padding:4px 12px;border-radius:20px;
+    margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;
+  }
+  .center{text-align:center;}
+
+  /* заголовки и вкладки */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(13,13,15,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;cursor:pointer;}
+  .logo-icon{
+    width:32px;height:32px;border-radius:50%;background:var(--orange);
+    display:flex;align-items:center;justify-content:center;color:#111;font-weight:800;
+  }
+  .tabs{display:flex;gap:6px;align-items:center;}
+  .tab-btn{
+    background:none;border:none;color:#cfcfd6;font-size:15px;
+    padding:9px 16px;border-radius:10px;cursor:pointer;transition:.2s;font-family:inherit;
+  }
+  .tab-btn:hover{color:var(--orange);background:rgba(255,122,0,.08);}
+  .tab-btn.active{background:var(--orange);color:#111;font-weight:600;}
+  .burger{display:none;font-size:26px;cursor:pointer;background:none;border:none;color:var(--text);}
+
+  /* картинки */
+  .page{display:none;padding:60px 0 80px;animation:fade .3s ease;}
+  .page.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* шрифты и расположение объектов на главной странице */
+  .hero{text-align:center;padding-bottom:60px;}
+  .hero h1{font-size:52px;line-height:1.1;margin-bottom:20px;}
+  .hero h1 span{color:var(--orange);}
+  .hero p{color:var(--muted);max-width:640px;margin:0 auto 34px;font-size:18px;}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:70px;}
+  .stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 20px;text-align:center;}
+  .stat b{display:block;font-size:34px;color:var(--orange);}
+  .stat span{color:var(--muted);font-size:14px;}
+
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .feature{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 22px;transition:.25s;}
+  .feature:hover{border-color:var(--orange);transform:translateY(-4px);}
+  .feature .ico{
+    width:46px;height:46px;border-radius:12px;background:rgba(255,122,0,.12);
+    color:var(--orange);display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;margin-bottom:16px;
+  }
+  .feature h3{font-size:17px;margin-bottom:8px;}
+  .feature p{color:var(--muted);font-size:14px;}
+
+  .directions{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px;}
+  .direction{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;transition:.25s;cursor:pointer;}
+  .direction:hover{border-color:var(--orange);}
+  .direction h3{font-size:19px;margin-bottom:10px;}
+  .direction p{color:var(--muted);font-size:14px;margin-bottom:18px;}
+  .direction a{color:var(--orange);font-size:14px;font-weight:600;}
+
+  /* график шрифты и их расположение */
+  .filters{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:34px;}
+  .filter-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .filter-row:last-child{margin-bottom:0;}
+  .filter-label{width:130px;color:var(--muted);font-size:14px;flex-shrink:0;}
+  .chip{
+    background:var(--bg-card-2);border:1px solid var(--border);color:#cfcfd6;
+    padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:.2s;
+  }
+  .chip:hover,.chip.active{background:var(--orange);color:#111;border-color:var(--orange);}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .card{
+    background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:22px;display:flex;flex-direction:column;gap:14px;height:100%;
+  }
+  .card-head{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);}
+  .card-head .time{color:var(--orange);font-weight:600;}
+  .card h3{font-size:18px;}
+  .card .meta{color:var(--muted);font-size:13.5px;display:flex;flex-direction:column;gap:6px;}
+  .card .btn{margin-top:auto;width:100%;text-align:center;}
+
+  /* шрифты тренеров и настройка их расположения */
+  .trainers{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .trainer{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
+    display:flex;flex-direction:column;height:100%;
+  }
+  .trainer-photo{height:300px;display:flex;align-items:flex-end;justify-content:center;position:relative;flex-shrink:0;}
+  .trainer-photo .initials{
+    position:absolute;bottom:20px;background:#111;color:#fff;font-weight:700;
+    padding:10px 22px;border-radius:12px;font-size:16px;letter-spacing:1px;
+  }
+  .tr-1{background:radial-gradient(circle at 50% 40%,#ff7a00,#a33f00);}
+  .tr-2{background:radial-gradient(circle at 50% 40%,#3b82f6,#1e3a8a);}
+  .tr-3{background:radial-gradient(circle at 50% 40%,#ec4899,#831843);}
+  .trainer-body{padding:22px;display:flex;flex-direction:column;flex:1;}
+  .trainer-body h3{font-size:18px;}
+  .trainer-body .role{color:var(--orange);font-size:13.5px;margin:6px 0 12px;}
+  .trainer-body p{color:var(--muted);font-size:13.5px;margin-bottom:14px;}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .badge{font-size:12px;color:var(--muted);background:var(--bg-card-2);border:1px solid var(--border);padding:5px 10px;border-radius:16px;}
+  .trainer-body .btn{width:100%;text-align:center;margin-top:auto;}
+
+  /* шрифты клубов и настройка расположения */
+  .clubs{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .club{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;gap:14px;height:100%;}
+  .club h3{font-size:19px;display:flex;align-items:center;gap:10px;}
+  .club h3 .dot{width:10px;height:10px;border-radius:50%;background:var(--orange);display:inline-block;}
+  .club .line{color:var(--muted);font-size:14px;}
+  .club .hours{background:var(--bg-card-2);border-radius:10px;padding:14px;font-size:13.5px;color:#cfcfd6;}
+  .club .hours b{display:block;color:var(--text);margin-bottom:6px;}
+  .club .btn{margin-top:auto;width:100%;text-align:center;}
+
+  /* Шрифты цен и настройка расположения */
+  .pricing{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  .price{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;display:flex;flex-direction:column;gap:14px;height:100%;}
+  .price.popular{border-color:var(--orange);box-shadow:0 0 30px rgba(255,122,0,.12);}
+  .price h3{font-size:17px;}
+  .price .lbl{font-size:12px;color:var(--orange);text-transform:uppercase;letter-spacing:1px;}
+  .price .amount{font-size:28px;font-weight:700;color:var(--orange);}
+  .price .amount small{font-size:13px;color:var(--muted);font-weight:400;}
+  .price ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:var(--muted);}
+  .price ul li::before{content:"✓ ";color:var(--orange);}
+  .price .btn{margin-top:auto;width:100%;text-align:center;}
+
+  
+  .auth-box{max-width:420px;margin:0 auto;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;}
+  .auth-tabs{display:flex;background:var(--bg-card-2);border-radius:10px;padding:4px;margin-bottom:24px;}
+  .auth-tabs button{
+    flex:1;background:none;border:none;color:var(--muted);padding:10px;border-radius:8px;
+    cursor:pointer;font-size:14px;transition:.2s;font-family:inherit;
+  }
+  .auth-tabs button.active{background:var(--orange);color:#111;font-weight:600;}
+  .auth-box label{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px;}
+  .auth-box input{
+    width:100%;background:var(--bg-card-2);border:1px solid var(--border);border-radius:10px;
+    padding:12px 14px;color:var(--text);font-size:14px;margin-bottom:16px;outline:none;
+  }
+  .auth-box input:focus{border-color:var(--orange);}
+  .auth-box .btn{width:100%;text-align:center;}
+
+  footer{border-top:1px solid var(--border);padding:40px 0;text-align:center;color:var(--muted);font-size:14px;}
+  footer .logo{justify-content:center;margin-bottom:14px;}
+
+  @media(max-width:1024px){
+    .features,.pricing{grid-template-columns:repeat(2,1fr);}
+    .directions,.trainers,.clubs,.cards{grid-template-columns:repeat(2,1fr);}
+    .hero h1{font-size:44px;}
+  }
+  @media(max-width:768px){
+    .tabs{
+      display:none;position:absolute;top:70px;left:0;right:0;
+      background:var(--bg-card);flex-direction:column;padding:20px;gap:8px;
+      border-bottom:1px solid var(--border);
+    }
+    .tabs.open{display:flex;}
+    .burger{display:block;}
+    .stats,.features,.directions,.cards,.trainers,.clubs,.pricing{grid-template-columns:1fr;}
+    .hero{padding-top:20px;}
+    .hero h1{font-size:34px;}
+    .hero p{font-size:16px;}
+    .section-title{font-size:26px;}
+    .filter-label{width:100%;}
+    .page{padding:40px 0 60px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Заголовки -->
+<header>
+  <div class="container nav">
+    <div class="logo" onclick="switchTab('home')"><span class="logo-icon">И</span> Импульс</div>
+    <nav class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="home">Главная</button>
+      <button class="tab-btn" data-tab="schedule">Расписание</button>
+      <button class="tab-btn" data-tab="trainers">Тренеры</button>
+      <button class="tab-btn" data-tab="clubs">Клубы</button>
+      <button class="tab-btn" data-tab="pricing">Цены</button>
+      <button class="tab-btn" data-tab="auth">Личный кабинет</button>
+    </nav>
+    <button class="burger" id="burger">☰</button>
+  </div>
+</header>
+
+<main>
+
+<!-- Домашняя страница -->
+<section id="tab-home" class="page active">
+  <div class="container">
+    <div class="hero">
+      <span class="tag">Спортивный клуб «Импульс»</span>
+      <h1>Импульс — <span>Тренируйся на полную</span></h1>
+      <p>Современные залы, опытные тренеры и удобное расписание — всё для твоего прогресса.</p>
+      <button class="btn" onclick="switchTab('schedule')">Выбрать направление &rsaquo;</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>3</b><span>клуба в городе</span></div>
+      <div class="stat"><b>40+</b><span>тренеров</span></div>
+      <div class="stat"><b>120+</b><span>занятий в неделю</span></div>
+      <div class="stat"><b>15</b><span>лет в фитнес-индустрии</span></div>
+    </div>
+
+    <div class="center">
+      <span class="tag">Почему мы</span>
+      <h2 class="section-title">Преимущества клуба</h2>
+      <p class="section-sub">Создаём условия, в которых регулярные тренировки становятся привычкой, а результат — вопросом времени.</p>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="ico">🕐</div><h3>Удобное расписание</h3><p>Занятия с раннего утра до позднего вечера каждый день недели.</p></div>
+      <div class="feature"><div class="ico">🎓</div><h3>Опытные тренеры</h3><p>Сертифицированные специалисты помогают достигать любых целей.</p></div>
+      <div class="feature"><div class="ico">🏋️</div><h3>Современные залы</h3><p>Новое оборудование и комфортные зоны для спокойных и активных тренировок.</p></div>
+      <div class="feature"><div class="ico">💳</div><h3>Гибкие абонементы</h3><p>Тарифы под любой формат — от разовых занятий до годового абонемента.</p></div>
+    </div>
+
+    <div class="center" style="margin-top:70px;">
+      <span class="tag">Направления</span>
+      <h2 class="section-title">Выберите свою тренировку</h2>
+      <p class="section-sub">Шесть направлений — от силового фитнеса до единоборств и групповых классов.</p>
+    </div>
+    <div class="directions">
+      <div class="direction" onclick="switchTab('schedule')"><h3>Фитнес</h3><p>Силовые и кардиотренировки для тела и выносливости.</p><a>К расписанию ›</a></div>
+      <div class="direction" onclick="switchTab('schedule')"><h3>Единоборства</h3><p>Бокс, борьба и ММА для силы духа и тела.</p><a>К расписанию ›</a></div>
+      <div class="direction" onclick="switchTab('schedule')"><h3>Кроссфит</h3><p>Интенсивные функциональные тренировки для всех уровней.</p><a>К расписанию ›</a></div>
+      <div class="direction" onclick="switchTab('schedule')"><h3>Пилатес и йога</h3><p>Гибкость, баланс и восстановление после нагрузок.</p><a>К расписанию ›</a></div>
+      <div class="direction" onclick="switchTab('schedule')"><h3>Персональные тренировки</h3><p>Индивидуальные программы под ваши цели и график.</p><a>К расписанию ›</a></div>
+      <div class="direction" onclick="switchTab('schedule')"><h3>Групповые классы</h3><p>Аэробика, танцы и командные занятия в кругу единомышленников.</p><a>К расписанию ›</a></div>
+    </div>
+  </div>
+</section>
+
+<!--График -->
+<section id="tab-schedule" class="page">
+  <div class="container">
+    <div class="center">
+      <span class="tag">Расписание</span>
+      <h2 class="section-title">Расписание занятий</h2>
+      <p class="section-sub">Выберите направление, клуб или тренера, чтобы найти подходящую тренировку по дням недели, времени и залу.</p>
+    </div>
+
+    <div class="filters">
+      <div class="filter-row">
+        <div class="filter-label">Направление</div>
+        <span class="chip active">Все направления</span>
+        <span class="chip">Фитнес</span>
+        <span class="chip">Единоборства</span>
+        <span class="chip">Кроссфит</span>
+        <span class="chip">Пилатес и йога</span>
+        <span class="chip">Персональные тренировки</span>
+        <span class="chip">Групповые классы</span>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Клуб</div>
+        <span class="chip active">Все клубы</span>
+        <span class="chip">Импульс Центр</span>
+        <span class="chip">Импульс Северный</span>
+        <span class="chip">Импульс Южный</span>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Тренер</div>
+        <span class="chip active">Все тренеры</span>
+        <span class="chip">Анна Смирнова</span>
+        <span class="chip">Игорь Волков</span>
+        <span class="chip">Мария Ковалёва</span>
+        <span class="chip">Ольга Никитина</span>
+        <span class="chip">Юлия Виноградова</span>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Найдено занятий: 18</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><span>Понедельник</span><span class="time">09:00</span></div>
+        <h3>Фитнес</h3>
+        <div class="meta">
+          <span>Длительность 60 мин</span>
+          <span>Тренер: Анна Смирнова</span>
+          <span>Зал силовых тренировок · Импульс Центр</span>
+        </div>
+        <button class="btn" onclick="alert('Запись на фитнес: Анна Смирнова, 09:00')">Записаться</button>
+      </div>
+      <div class="card">
+        <div class="card-head"><span>Понедельник</span><span class="time">12:00</span></div>
+        <h3>Пилатес и йога</h3>
+        <div class="meta">
+          <span>Длительность 60 мин</span>
+          <span>Тренер: Юлия Виноградова</span>
+          <span>Студия йоги · Импульс Центр</span>
+        </div>
+        <button class="btn" onclick="alert('Запись на пилатес: Юлия Виноградова, 12:00')">Записаться</button>
+      </div>
+      <div class="card">
+        <div class="card-head"><span>Понедельник</span><span class="time">19:00</span></div>
+        <h3>Кроссфит</h3>
+        <div class="meta">
+          <span>Длительность 60 мин</span>
+          <span>Тренер: Ольга Никитина</span>
+          <span>Кроссфит-зона · Импульс Северный</span>
+        </div>
+        <button class="btn" onclick="alert('Запись на кроссфит: Ольга Никитина, 19:00')">Записаться</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Тренера -->
+<section id="tab-trainers" class="page">
+  <div class="container">
+    <div class="center">
+      <span class="tag">Тренеры</span>
+      <h2 class="section-title">Наша команда тренеров</h2>
+      <p class="section-sub">Опытные специалисты по фитнесу, единоборствам, кроссфиту и групповым программам помогут вам достичь целей.</p>
+    </div>
+    <div class="trainers">
+      <div class="trainer">
+        <div class="trainer-photo tr-1"><span class="initials">АС</span></div>
+        <div class="trainer-body">
+          <h3>Анна Смирнова</h3>
+          <div class="role">Тренер групповых программ</div>
+          <p>Специалист по силовым тренировкам и растяжке. Помогает новичкам безопасно начать путь в фитнесе.</p>
+          <div class="badges"><span class="badge">8 лет опыта</span><span class="badge">Фитнес</span><span class="badge">Персональные тренировки</span></div>
+          <button class="btn" onclick="alert('Запись к тренеру Анне Смирновой')">Записаться к тренеру</button>
+        </div>
+      </div>
+      <div class="trainer">
+        <div class="trainer-photo tr-2"><span class="initials">ИВ</span></div>
+        <div class="trainer-body">
+          <h3>Игорь Волков</h3>
+          <div class="role">Тренер по функциональным тренировкам</div>
+          <p>Мастер спорта по кроссфиту. Строит тренировки вокруг силы, выносливости и техники.</p>
+          <div class="badges"><span class="badge">10 лет опыта</span><span class="badge">Кроссфит</span><span class="badge">Растяжка</span></div>
+          <button class="btn" onclick="alert('Запись к тренеру Игорю Волкову')">Записаться к тренеру</button>
+        </div>
+      </div>
+      <div class="trainer">
+        <div class="trainer-photo tr-3"><span class="initials">МК</span></div>
+        <div class="trainer-body">
+          <h3>Мария Ковалёва</h3>
+          <div class="role">Тренер по йоге</div>
+          <p>Специалист по восстановлению, гибкости и дыхательным практикам. Автор программ для снятия стресса.</p>
+          <div class="badges"><span class="badge">6 лет опыта</span><span class="badge">Пилатес</span><span class="badge">Йога</span></div>
+          <button class="btn" onclick="alert('Запись к тренеру Марии Ковалёвой')">Записаться к тренеру</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Клубы  -->
+<section id="tab-clubs" class="page">
+  <div class="container">
+    <div class="center">
+      <span class="tag">Клубы</span>
+      <h2 class="section-title">Наши клубы</h2>
+      <p class="section-sub">Три зала в разных районах города — выбирайте удобный адрес, чтобы тренироваться рядом с домом или работой.</p>
+    </div>
+    <div class="clubs">
+      <div class="club">
+        <h3><span class="dot"></span>Импульс Центр</h3>
+        <div class="line">г. Нижний Тагил, ул. Ленина, 12</div>
+        <div class="line">+7 (495) 120-45-01</div>
+        <div class="line">central@impulse-fit.ru</div>
+        <div class="hours"><b>Часы работы</b>Будни: 07:00 – 23:00<br>Выходные: 08:00 – 22:00</div>
+        <button class="btn" onclick="switchTab('schedule')">Посмотреть занятия</button>
+      </div>
+      <div class="club">
+        <h3><span class="dot"></span>Импульс Северный</h3>
+        <div class="line">г. Нижний Тагил, ул. Мира, 78</div>
+        <div class="line">+7 (495) 120-45-02</div>
+        <div class="line">north@impulse-fit.ru</div>
+        <div class="hours"><b>Часы работы</b>Будни: 07:00 – 23:00<br>Выходные: 08:00 – 21:00</div>
+        <button class="btn" onclick="switchTab('schedule')">Посмотреть занятия</button>
+      </div>
+      <div class="club">
+        <h3><span class="dot"></span>Импульс Южный</h3>
+        <div class="line">г. Нижний Тагил, ул. Гагарина, 5</div>
+        <div class="line">+7 (495) 120-45-03</div>
+        <div class="line">south@impulse-fit.ru</div>
+        <div class="hours"><b>Часы работы</b>Будни: 08:00 – 22:00<br>Выходные: 10:00 – 20:00</div>
+        <button class="btn" onclick="switchTab('schedule')">Посмотреть занятия</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Абонементы клуба -->
+<section id="tab-pricing" class="page">
+  <div class="container">
+    <div class="center">
+      <span class="tag">Цены</span>
+      <h2 class="section-title">Абонементы клуба «Импульс»</h2>
+      <p class="section-sub">Выберите подходящий формат: разовый визит, месячный абонемент или годовой доступ во все клубы сети.</p>
+    </div>
+    <div class="pricing">
+      <div class="price">
+        <span class="lbl">Разовый визит</span>
+        <h3>Пробная тренировка</h3>
+        <div class="amount">500 ₽ <small>за визит</small></div>
+        <ul>
+          <li>Тренажёрный зал и бассейн</li>
+          <li>Тренировка в группе по расписанию</li>
+          <li>Раздевалка и душ</li>
+          <li>Консультация тренера при первом визите</li>
+        </ul>
+        <button class="btn" onclick="alert('Выбран абонемент: Пробная тренировка — 500 ₽')">Выбрать абонемент</button>
+      </div>
+      <div class="price popular">
+        <span class="lbl">Хит продаж</span>
+        <h3>Тренажёрный зал</h3>
+        <div class="amount">2 900 ₽ <small>в месяц</small></div>
+        <ul>
+          <li>Тренажёрный зал без ограничений</li>
+          <li>Функциональная зона и бассейн</li>
+          <li>Фитнес-тестирование при старте</li>
+          <li>Раздевалка и душ</li>
+          <li>Пауза абонемента до 7 дней</li>
+        </ul>
+        <button class="btn" onclick="alert('Выбран абонемент: Тренажёрный зал — 2 900 ₽/мес')">Выбрать абонемент</button>
+      </div>
+      <div class="price">
+        <span class="lbl">Все направления</span>
+        <h3>Полный доступ</h3>
+        <div class="amount">4 900 ₽ <small>в месяц</small></div>
+        <ul>
+          <li>Тренажёрный зал без ограничений</li>
+          <li>Все групповые классы</li>
+          <li>Единоборства и кроссфит</li>
+          <li>Пауза абонемента до 14 дней</li>
+          <li>Раздевалка и душ</li>
+        </ul>
+        <button class="btn" onclick="alert('Выбран абонемент: Полный доступ — 4 900 ₽/мес')">Выбрать абонемент</button>
+      </div>
+      <div class="price">
+        <span class="lbl">Импульс MAX</span>
+        <h3>Годовой доступ</h3>
+        <div class="amount">39 900 ₽ <small>в год</small></div>
+        <ul>
+          <li>Все направления во всех клубах сети</li>
+          <li>Персональные программы</li>
+          <li>Заморозка абонемента до 60 дней</li>
+          <li>Приоритетная запись на занятия</li>
+          <li>Гостевые визиты — 4 в год</li>
+        </ul>
+        <button class="btn" onclick="alert('Выбран абонемент: Импульс MAX — 39 900 ₽/год')">Выбрать абонемент</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Авторизация на сайт -->
+<section id="tab-auth" class="page">
+  <div class="container">
+    <div class="center">
+      <span class="tag">Личный кабинет</span>
+      <h2 class="section-title">Вход и регистрация</h2>
+      <p class="section-sub">Демонстрационный режим: вход имитируется на стороне браузера, данные никуда не отправляются.</p>
+    </div>
+    <div class="auth-box">
+      <div class="auth-tabs">
+        <button class="active" id="loginTab">Вход</button>
+        <button id="registerTab">Регистрация</button>
+      </div>
+      <form id="authForm" onsubmit="event.preventDefault(); alert('Демо-режим: данные не отправляются.');">
+        <label>Email</label>
+        <input type="email" placeholder="you@example.com" required>
+        <label>Пароль</label>
+        <input type="password" placeholder="••••••" required>
+        <button class="btn" type="submit" id="authBtn">Войти</button>
+      </form>
+      <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:14px;">Для демо-входа подойдёт любой email и пароль от 6 символов.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="logo"><span class="logo-icon">И</span> Импульс</div>
+    <p>© 2026 Спортивный клуб «Импульс». Тренируйся на полную.</p>
+  </div>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const pages = document.querySelectorAll('.page');
+  const tabsNav = document.getElementById('tabs');
+  const burger = document.getElementById('burger');
+
+  function switchTab(name){
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    pages.forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+    tabsNav.classList.remove('open');
+    window.scrollTo({top:0, behavior:'smooth'});
+    history.replaceState(null, '', '#' + name);
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+  burger.addEventListener('click', () => tabsNav.classList.toggle('open'));
+
+ 
+  const loginTab = document.getElementById('loginTab');
+  const registerTab = document.getElementById('registerTab');
+  const authBtn = document.getElementById('authBtn');
+
+  loginTab.addEventListener('click', () => {
+    loginTab.classList.add('active');
+    registerTab.classList.remove('active');
+    authBtn.textContent = 'Войти';
+  });
+  registerTab.addEventListener('click', () => {
+    registerTab.classList.add('active');
+    loginTab.classList.remove('active');
+    authBtn.textContent = 'Зарегистрироваться';
+  });
+
+  
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const row = chip.closest('.filter-row');
+      row.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  
+  const hash = window.location.hash.replace('#','');
+  if (hash && document.getElementById('tab-' + hash)) switchTab(hash);
+</script>
+</body>
+</html>
